@@ -17,20 +17,26 @@ public class PaddleMovement : MonoBehaviour {
     // Use this for initialization
     void Start () {
         coll = this.GetComponent(typeof(Collider2D)) as Collider2D;
+        DelegateHandler.onRespawnBall += this.setBall;
+        //ball = Instantiate(Resources.Load("Ball", typeof(GameObject)), new Vector3(5, 5, 5), new Quaternion()) as GameObject;
         
-        ball = Instantiate(Resources.Load("Ball", typeof(GameObject)), new Vector3(5, 5, 5), new Quaternion()) as GameObject;
+
+
+    }
+
+    public void setBall(GameObject newBall)
+    {
+        ball = newBall;
         ballColl = ball.GetComponent(typeof(Collider2D)) as Collider2D;
         ballSprite = ball.GetComponent(typeof(SpriteRenderer)) as SpriteRenderer;
         ballScript = ball.GetComponent(typeof(BallScript)) as BallScript;
-
-
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        MovePaddle();    
-        if (!ballInPlay)
+        MovePaddle();
+        if (!ballInPlay && ball != null)
         {
             AttachBallToPaddle();
         }

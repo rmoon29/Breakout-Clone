@@ -8,6 +8,7 @@ public class BallScript : MonoBehaviour {
     private Vector3 velocity = new Vector3(0,0,0);
     private Rigidbody2D rb;
     private CircleCollider2D coll;
+
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
@@ -38,12 +39,20 @@ public class BallScript : MonoBehaviour {
             if (collision.collider.tag == "Brick")
             {
                 Destroy(collision.collider.gameObject);
+                DelegateHandler.increaseScore(10);
+                
             }
         }
         else if (collision.collider.tag == "Player")
         {
             Vector3 reboundPoint = collision.collider.transform.GetChild(0).transform.position;
-            rb.velocity = (( this.transform.position - reboundPoint).normalized) * speed * 1.1f;
+            rb.velocity = ((this.transform.position - reboundPoint).normalized) * speed * 1.1f;
+        }
+        else if (collision.collider.tag == "DeathZone")
+        {
+            DelegateHandler.ballDeath();
+            Destroy(this);
+
         }
         
     }
@@ -55,4 +64,6 @@ public class BallScript : MonoBehaviour {
         
         rb.velocity = velocity;
     }
+
+
 }
