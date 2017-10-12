@@ -11,12 +11,14 @@ public class GameManager : MonoBehaviour {
     private int lives;
     private int gameScore;
     private float respawnTime = 2f;
+    private int numBalls;
 
     // Use this for initialization
     void Start() {
         
         DelegateHandler.onScoreIncrease += this.IncreaseScore;
         DelegateHandler.onBallDeath += this.ballDeath;
+        PowerUpEventHandler.DoubleBall += this.addBall;
         spawnBall();
     }
 
@@ -28,13 +30,19 @@ public class GameManager : MonoBehaviour {
     void IncreaseScore(int score)
     {
         gameScore += score;
-        Debug.Log(gameScore);
+        //Debug.Log(gameScore);
     }
 
     void ballDeath()
     {
-        lives--;
-        StartCoroutine(respawnBallTime());
+        numBalls--;
+        Debug.Log(numBalls);
+        if (numBalls == 0)
+        {
+            lives--;
+            StartCoroutine(respawnBallTime());
+            DelegateHandler.lifeLost();
+        }
 
     }
 
@@ -44,10 +52,17 @@ public class GameManager : MonoBehaviour {
         spawnBall();
     }
 
+    public void addBall()
+    {
+        numBalls*=2;
+        Debug.Log(numBalls);
+    }
+
     void spawnBall()
     {
-        ball = Instantiate(Resources.Load("Ball", typeof(GameObject)), paddle.transform.position, new Quaternion()) as GameObject;
-        paddleMovement.setBall(ball);
+        ball = Instantiate(Resources.Load("Ball", typeof(GameObject)), new Vector3(paddle.transform.position.x, paddle.transform.position.y +1), new Quaternion()) as GameObject;
         DelegateHandler.respawnBall(ball);
+        paddleMovement.setBall(ball);
+        numBalls++;
     }
 }

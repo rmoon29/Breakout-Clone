@@ -31,7 +31,7 @@ public class LevelGenerator : MonoBehaviour {
         {
             return;
         }
-        Debug.Log("Showing pixel at: " + x + y);
+        //Debug.Log("Showing pixel at: " + x + y);
         foreach(ColorToPrefab colorMapping in colorMappings)
         {
             if (colorMapping.color.Equals(pixelColor))

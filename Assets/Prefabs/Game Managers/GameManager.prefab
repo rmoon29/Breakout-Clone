@@ -51,7 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb4f30082c4cdc4a842d2ea683f08a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paddleMovement: {fileID: 0}
-  paddle: {fileID: 0}
-  ball: {fileID: 0}
+  paddleMovement: {fileID: 114056049917900688, guid: eeca6a6a94b2cfe43b5fee26fe50a46d,
+    type: 2}
+  paddle: {fileID: 1563517755028662, guid: eeca6a6a94b2cfe43b5fee26fe50a46d, type: 2}
+  ball: {fileID: 1063424065984398, guid: c3828a006d54ec44a8a9694be3b71b4c, type: 2}
   levelGenerator: {fileID: 0}

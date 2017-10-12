@@ -5,7 +5,7 @@ using UnityEngine;
 public class BallScript : MonoBehaviour {
 
     public float speed = 5;
-    private Vector3 velocity = new Vector3(0,0,0);
+    public Vector3 velocity = new Vector3(0,0,0);
     private Rigidbody2D rb;
     private CircleCollider2D coll;
     private int scoreMultiplier = 1;
@@ -15,13 +15,18 @@ public class BallScript : MonoBehaviour {
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = velocity;
-
+        EventSupscriptions();
+        
     }
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+    void OnDestroy()
+    {
+        EventUnsupscriptions();
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -49,13 +54,15 @@ public class BallScript : MonoBehaviour {
         else if (collision.collider.tag == "Player")
         {
             Vector3 reboundPoint = collision.collider.transform.GetChild(0).transform.position;
+            //Debug.Log(reboundPoint);
             rb.velocity = ((this.transform.position - reboundPoint).normalized) * rb.velocity.magnitude;
+            //Debug.Log(rb.velocity);
             scoreMultiplier = 1;
         }
         else if (collision.collider.tag == "KillZone")
         {
             DelegateHandler.ballDeath();
-            Destroy(this);
+            Destroy(this.gameObject);
 
         }
         rb.velocity *= 1.01f;
@@ -68,6 +75,52 @@ public class BallScript : MonoBehaviour {
         velocity = velocity.normalized * speed;
         
         rb.velocity = velocity;
+    }
+
+    public void DoubleBall()
+    {
+        GameObject newBall = Instantiate(Resources.Load("Ball", typeof(GameObject)), new Vector3(this.transform.position.x, this.transform.position.y), new Quaternion()) as GameObject;
+        
+        if (newBall != null)
+        {
+            BallScript newBS = newBall.GetComponent<BallScript>();
+            newBS.velocity = new Vector3(-this.velocity.x, this.velocity.y);
+            newBS.speed = this.speed;
+        }
+    }
+
+    void IncreaseBallSpeed()
+    {
+        rb.velocity = rb.velocity * 1.5f;
+    }
+    void DecreaseBallSpeed()
+    {
+        rb.velocity = rb.velocity * 0.75f;
+    }
+    void growBall()
+    {
+        this.transform.localScale = new Vector3(this.transform.localScale.x * 1.5f, this.transform.localScale.y * 1.5f);
+    }
+    void shrinkBall()
+    {
+        this.transform.localScale = new Vector3(this.transform.localScale.x * 0.75f, this.transform.localScale.y * 0.75f);
+    }
+    void EventSupscriptions()
+    {
+        PowerUpEventHandler.DoubleBall += this.DoubleBall;
+        PowerUpEventHandler.BallSpeedIncrease += this.IncreaseBallSpeed;
+        PowerUpEventHandler.BallSpeedDecrease += this.DecreaseBallSpeed;
+        PowerUpEventHandler.GrowBall += this.growBall;
+        PowerUpEventHandler.ShrinkBall += this.shrinkBall;
+    }
+
+    void EventUnsupscriptions()
+    {
+        PowerUpEventHandler.DoubleBall -= this.DoubleBall;
+        PowerUpEventHandler.BallSpeedIncrease -= this.IncreaseBallSpeed;
+        PowerUpEventHandler.BallSpeedDecrease -= this.DecreaseBallSpeed;
+        PowerUpEventHandler.GrowBall -= this.growBall;
+        PowerUpEventHandler.ShrinkBall -= this.shrinkBall;
     }
 
 

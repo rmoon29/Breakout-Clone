@@ -13,6 +13,9 @@ public class DelegateHandler : MonoBehaviour {
     public delegate void OnRespawnBall(GameObject ball);
     public static event OnRespawnBall onRespawnBall;
 
+    public delegate void OnLifeLost();
+    public static event OnLifeLost onLifeLost;
+
 
     public static void increaseScore(int score)
     {
@@ -27,7 +30,6 @@ public class DelegateHandler : MonoBehaviour {
     {
         if(onBallDeath != null)
         {
-            Debug.Log("Ball dead");
             onBallDeath();
         }
     }
@@ -40,4 +42,11 @@ public class DelegateHandler : MonoBehaviour {
         }
     }
 	
+    public static void lifeLost()
+    {
+        if(onLifeLost != null)
+        {
+            onLifeLost();
+        }
+    }
 }
