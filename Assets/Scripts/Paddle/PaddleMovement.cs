@@ -30,6 +30,7 @@ public class PaddleMovement : MonoBehaviour {
         ballColl = ball.GetComponent(typeof(Collider2D)) as Collider2D;
         ballSprite = ball.GetComponent(typeof(SpriteRenderer)) as SpriteRenderer;
         ballScript = ball.GetComponent(typeof(BallScript)) as BallScript;
+        ballInPlay = false;
     }
 	
 	// Update is called once per frame

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour {
 
+    // 10 x 10 pixel
     public Texture2D map;
     public ColorToPrefab[] colorMappings;
 	// Use this for initialization

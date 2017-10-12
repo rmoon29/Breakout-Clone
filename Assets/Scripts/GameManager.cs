@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour {
         
         DelegateHandler.onScoreIncrease += this.IncreaseScore;
         DelegateHandler.onBallDeath += this.ballDeath;
+        spawnBall();
     }
 
     // Update is called once per frame
@@ -34,19 +35,19 @@ public class GameManager : MonoBehaviour {
     {
         lives--;
         StartCoroutine(respawnBallTime());
-        spawnBall();
 
     }
 
     IEnumerator respawnBallTime()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(respawnTime);
+        spawnBall();
     }
 
     void spawnBall()
     {
-        ball = Instantiate(Resources.Load("Ball", typeof(GameObject)), new Vector3(5, 5, 5), new Quaternion()) as GameObject;
+        ball = Instantiate(Resources.Load("Ball", typeof(GameObject)), paddle.transform.position, new Quaternion()) as GameObject;
         paddleMovement.setBall(ball);
-        DelegateHandler.respawnBall();
+        DelegateHandler.respawnBall(ball);
     }
 }

@@ -27,6 +27,7 @@ public class DelegateHandler : MonoBehaviour {
     {
         if(onBallDeath != null)
         {
+            Debug.Log("Ball dead");
             onBallDeath();
         }
     }

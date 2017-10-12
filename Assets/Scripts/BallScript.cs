@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class BallScript : MonoBehaviour {
 
-    private float speed = 5;
+    public float speed = 5;
     private Vector3 velocity = new Vector3(0,0,0);
     private Rigidbody2D rb;
     private CircleCollider2D coll;
+    private int scoreMultiplier = 1;
+    private int blockHitScore = 10;
 
 	// Use this for initialization
 	void Start () {
@@ -29,31 +31,34 @@ public class BallScript : MonoBehaviour {
             {
                 if (contact.normal == new Vector2(0, 1) || contact.normal == new Vector2(0, -1))
                 {
-                    rb.velocity = new Vector2(rb.velocity.x, (-rb.velocity.y * 1.1f));
+                    rb.velocity = new Vector2(rb.velocity.x, (-rb.velocity.y));
                 }
                 else
                 {
-                    rb.velocity = new Vector2((-rb.velocity.x * 1.1f), rb.velocity.y);
+                    rb.velocity = new Vector2((-rb.velocity.x), rb.velocity.y);
                 }
             }
             if (collision.collider.tag == "Brick")
             {
                 Destroy(collision.collider.gameObject);
-                DelegateHandler.increaseScore(10);
+                DelegateHandler.increaseScore(blockHitScore * scoreMultiplier);
+                scoreMultiplier++;
                 
             }
         }
         else if (collision.collider.tag == "Player")
         {
             Vector3 reboundPoint = collision.collider.transform.GetChild(0).transform.position;
-            rb.velocity = ((this.transform.position - reboundPoint).normalized) * speed * 1.1f;
+            rb.velocity = ((this.transform.position - reboundPoint).normalized) * rb.velocity.magnitude;
+            scoreMultiplier = 1;
         }
-        else if (collision.collider.tag == "DeathZone")
+        else if (collision.collider.tag == "KillZone")
         {
             DelegateHandler.ballDeath();
             Destroy(this);
 
         }
+        rb.velocity *= 1.01f;
         
     }
 
