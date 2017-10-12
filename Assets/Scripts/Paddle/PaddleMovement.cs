@@ -12,15 +12,16 @@ public class PaddleMovement : MonoBehaviour {
     SpriteRenderer ballSprite;
     bool ballInPlay = false;
     float ballY;
+    BallScript ballScript;
 
     // Use this for initialization
     void Start () {
         coll = this.GetComponent(typeof(Collider2D)) as Collider2D;
-
+        
         ball = Instantiate(Resources.Load("Ball", typeof(GameObject)), new Vector3(5, 5, 5), new Quaternion()) as GameObject;
-        Debug.Log(ball.transform.position);
         ballColl = ball.GetComponent(typeof(Collider2D)) as Collider2D;
         ballSprite = ball.GetComponent(typeof(SpriteRenderer)) as SpriteRenderer;
+        ballScript = ball.GetComponent(typeof(BallScript)) as BallScript;
 
 
     }
@@ -33,8 +34,9 @@ public class PaddleMovement : MonoBehaviour {
         {
             AttachBallToPaddle();
         }
-        if(Input.GetAxis("Jump") > 0)
+        if(Input.GetButtonDown("Fire1"))
         {
+            //Debug.Log("hello");
             LaunchBall();
         }
         
@@ -44,7 +46,7 @@ public class PaddleMovement : MonoBehaviour {
 	}
     void MovePaddle()
     {
-        movePaddleAmount = Input.GetAxis("Horizontal") * speed;
+        /*movePaddleAmount = Input.GetAxis("Horizontal") * speed;
         //Check bounds of Level
         if (coll.bounds.min.x > -8 && movePaddleAmount < 0)
         {
@@ -54,6 +56,9 @@ public class PaddleMovement : MonoBehaviour {
         {
             this.transform.Translate(movePaddleAmount, 0, 0);
         }
+        */
+        
+        this.transform.position = new Vector3 (Camera.main.ScreenToWorldPoint(Input.mousePosition).x, this.transform.position.y);
 
     }
 
@@ -67,6 +72,7 @@ public class PaddleMovement : MonoBehaviour {
 
     void LaunchBall()
     {
-
+        ballScript.LaunchBall();
+        ballInPlay = true;
     }
 }
