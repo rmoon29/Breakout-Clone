@@ -8,7 +8,6 @@ public class PaddleMovement : MonoBehaviour {
     private GameObject ball;
     Collider2D coll;
     Collider2D ballColl;
-    bool ballInPlay = false;
     float ballY;
     BallScript ballScript;
     private bool isBallAttached = false;
@@ -35,7 +34,7 @@ public class PaddleMovement : MonoBehaviour {
         //Debug.Log("this needs to be first");
         ballColl = ball.GetComponent(typeof(Collider2D)) as Collider2D;
         ballScript = ball.GetComponent(typeof(BallScript)) as BallScript;
-        ballInPlay = false;
+
         isBallAttached = true;
 
     }
@@ -91,7 +90,6 @@ public class PaddleMovement : MonoBehaviour {
     {
         ballScript.LaunchBall();
         //coll.enabled = !coll.enabled;
-        ballInPlay = true;
         isBallAttached = false;
     }
 

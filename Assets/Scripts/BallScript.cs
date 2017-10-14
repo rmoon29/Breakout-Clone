@@ -10,12 +10,14 @@ public class BallScript : MonoBehaviour {
     private CircleCollider2D coll;
     private int scoreMultiplier = 1;
     private int blockHitScore = 10;
+    private AudioSource audio;
 
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = velocity;
         EventSupscriptions();
+        audio = GetComponent<AudioSource>();
         
     }
 	
@@ -28,8 +30,15 @@ public class BallScript : MonoBehaviour {
         EventUnsupscriptions();
     }
 
+    void DestroyBall()
+    {
+        DelegateHandler.ballDeath();
+        Destroy(this.gameObject);
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
+        audio.Play();
         if (collision.collider.tag == "Wall" || collision.collider.tag == "Brick")
         {
             foreach (ContactPoint2D contact in collision.contacts)
@@ -48,6 +57,7 @@ public class BallScript : MonoBehaviour {
                 Destroy(collision.collider.gameObject);
                 DelegateHandler.increaseScore(blockHitScore * scoreMultiplier);
                 scoreMultiplier++;
+                DelegateHandler.subtractBrick();
                 
             }
         }
@@ -61,8 +71,7 @@ public class BallScript : MonoBehaviour {
         }
         else if (collision.collider.tag == "KillZone")
         {
-            DelegateHandler.ballDeath();
-            Destroy(this.gameObject);
+            DestroyBall();
 
         }
         rb.velocity *= 1.01f;
@@ -112,6 +121,7 @@ public class BallScript : MonoBehaviour {
         PowerUpEventHandler.BallSpeedDecrease += this.DecreaseBallSpeed;
         PowerUpEventHandler.GrowBall += this.growBall;
         PowerUpEventHandler.ShrinkBall += this.shrinkBall;
+        DelegateHandler.onLevelComplete += this.DestroyBall;
     }
 
     void EventUnsupscriptions()
@@ -121,6 +131,7 @@ public class BallScript : MonoBehaviour {
         PowerUpEventHandler.BallSpeedDecrease -= this.DecreaseBallSpeed;
         PowerUpEventHandler.GrowBall -= this.growBall;
         PowerUpEventHandler.ShrinkBall -= this.shrinkBall;
+        DelegateHandler.onLevelComplete -= this.DestroyBall;
     }
 
 

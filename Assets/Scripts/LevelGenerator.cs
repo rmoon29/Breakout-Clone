@@ -2,30 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class LevelGenerator : MonoBehaviour {
 
     // 10 x 10 pixel
-    public Texture2D map;
+    public Texture2D[] map;
     public ColorToPrefab[] colorMappings;
 	// Use this for initialization
 	void Start () {
-        GenerateLevel();
+        
+        GenerateLevel(0);
+        DelegateHandler.onNewLevel += GenerateLevel;
 	}
 	
-    void GenerateLevel()
+    void GenerateLevel(int level)
     {
-        for (int x = 0; x < map.width; x++)
+        Debug.Log("Generating Level");
+        for (int x = 0; x < map[level].width; x++)
         {
-            for (int y = 0; y < map.height; y++)
+            for (int y = 0; y < map[level].height; y++)
             {
-                GenerateTile(x, y);
+                GenerateTile(x, y, level);
             }
         }
 
     }
-    void GenerateTile(int x, int y)
+    void GenerateTile(int x, int y, int level)
     {
-        Color pixelColor = map.GetPixel(x, y);
+        Color pixelColor = map[level].GetPixel(x, y);
 
         if(pixelColor.a == 0)
         {
@@ -38,10 +42,12 @@ public class LevelGenerator : MonoBehaviour {
             {
                 Vector2 position = new Vector2();
                 position.x = (x + .8f) * 1.5f;
-                position.y = y;
+                position.y = (y + 3.5f) / 1.4f;
                 Instantiate(colorMapping.prefab, position, Quaternion.identity, transform);
+                DelegateHandler.addBrick();
             }
         }
 
     }
 }
+

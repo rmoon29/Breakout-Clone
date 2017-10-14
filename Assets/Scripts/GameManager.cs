@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -8,10 +9,12 @@ public class GameManager : MonoBehaviour {
     public GameObject paddle;
     public GameObject ball;
     public LevelGenerator levelGenerator;
+    public Text scoreText;
     private int lives;
     private int gameScore;
     private float respawnTime = 2f;
     private int numBalls;
+    private int numBricks;
 
     // Use this for initialization
     void Start() {
@@ -19,6 +22,8 @@ public class GameManager : MonoBehaviour {
         DelegateHandler.onScoreIncrease += this.IncreaseScore;
         DelegateHandler.onBallDeath += this.ballDeath;
         PowerUpEventHandler.DoubleBall += this.addBall;
+        DelegateHandler.onAddBrick += this.addBrick;
+        DelegateHandler.onSubtractBrick += this.subtractBrick;
         spawnBall();
     }
 
@@ -30,6 +35,7 @@ public class GameManager : MonoBehaviour {
     void IncreaseScore(int score)
     {
         gameScore += score;
+        scoreText.text = ("Score :" + gameScore);
         //Debug.Log(gameScore);
     }
 
@@ -64,5 +70,39 @@ public class GameManager : MonoBehaviour {
         DelegateHandler.respawnBall(ball);
         paddleMovement.setBall(ball);
         numBalls++;
+    }
+    void addBrick()
+    {
+        numBricks++;
+        Debug.Log("Current Bricks" + numBricks);
+    }
+    void subtractBrick()
+    {
+        numBricks--;
+        Debug.Log("Current Bricks" + numBricks);
+        if (numBricks == 0)
+        {
+            LevelComplete();
+        }
+    }
+
+    void LevelComplete()
+    {
+        DelegateHandler.levelComplete();
+        PersistentGameManager.Level++;
+        DelegateHandler.newLevel(PersistentGameManager.Level);
+        StartCoroutine("NewLevel");
+
+
+    }
+
+    IEnumerable NewLevel()
+    {
+
+        yield return new WaitForSeconds(2f);
+
+
+        spawnBall();
+        Debug.Log("Current Level: " + PersistentGameManager.Level);
     }
 }
